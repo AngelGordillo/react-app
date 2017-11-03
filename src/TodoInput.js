@@ -1,18 +1,22 @@
 import ReactDOM from 'react-dom';
 import React, { Component } from 'react';
-
+import Request from 'superagent';
 class TodoInput extends Component {
   constructor(props){
     super(props);
 
     this.state = {
-      todoTitle: '',
-      todoResponsible: '',
-      todoDescription: '',
-      todoPriority: ''
+      title: '',
+      responsible: '',
+      description: '',
+      priority: ''
     }
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  componentDidMount(){
+   
   }
 
   handleInputChange(event){
@@ -24,15 +28,20 @@ class TodoInput extends Component {
     })
   }
 
+
+
   handleSubmit(event){
     event.preventDefault();
     this.props.onAddTodo(this.state);
-    this.setState({
-      todoTitle: '',
-      todoResponsible: '',
-      todoDescription: '',
-      todoPriority: 'Lowest'
+
+     Request
+    .post('http://localhost:4000/tasks')
+    .set('Content-Type', 'application/x-www-form-urlencoded')
+    .send(this.state)
+    .end(function(err, res){
+    console.log(res.text);
     });
+
   }
 
 
@@ -44,11 +53,11 @@ class TodoInput extends Component {
             <div className="form-group">
               <label htmlFor="inputTodoTitle" className="col-sm-2 control-label">Todo</label>
               <div className="col-sm-10">
-                <input  name="todoTitle"
+                <input  name="title"
                         type="text"
                         className="form-control"
                         id="inputTodoTitle"
-                        value={this.state.todoTitle}
+                        
                         onChange={this.handleInputChange}
                         placeholder="Title"></input>
               </div>
@@ -56,11 +65,11 @@ class TodoInput extends Component {
             <div className="form-group">
               <label htmlFor="inputTodoResponsible" className="col-sm-2 control-label">Responsible</label>
               <div className="col-sm-10">
-                <input  name="todoResponsible"
+                <input  name="responsible"
                         type="text"
                         className="form-control"
                         id="inputTodoResponsible"
-                        value={this.state.todoResponsible}
+                        
                         onChange={this.handleInputChange}
                         placeholder="Responsible"></input>
               </div>
@@ -68,33 +77,34 @@ class TodoInput extends Component {
             <div className="form-group">
               <label htmlFor="inputTodoDesc" className="col-sm-2 control-label">Description</label>
               <div className="col-sm-10">
-                <textarea   name="todoDescription"
+                <textarea   name="description"
                             className="form-control"
                             rows="3"
                             id="inputTodoDesc"
-                            value={this.state.todoDescription}
+                           
                             onChange={this.handleInputChange}></textarea>
               </div>
             </div>
             <div className="form-group">
               <label htmlFor="inputTodoPriority" className="col-sm-2 control-label">Priority</label>
               <div className="col-sm-10">
-                <select   name="todoPriority"
+                <select   name="priority"
                           className="form-control"
                           id="inputTodoPriority"
-                          value={this.state.todoPriority}
+                          
                           onChange={this.handleInputChange}>
-                  <option>Lowest</option>
-                  <option>Low</option>
-                  <option>Medium</option>
-                  <option>High</option>
-                  <option>Highest</option>
+                  <option value="lowest">Lowest</option>
+                  <option value="low">Low</option>
+                  <option value="medium">Medium</option>
+                  <option value="high">High</option>
+                  <option value="highest">Highest</option>
                 </select>
               </div>
             </div>
             <div className="form-group">
               <div className="col-sm-offset-2 col-sm-10">
                 <button type="submit" className="btn btn-success">Add Todo</button>
+                <button  className="btn btn-success">Update Todo</button>
               </div>
             </div>
           </form>
